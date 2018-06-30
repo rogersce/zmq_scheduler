@@ -6,7 +6,7 @@ import dill as pickle
 
 context = zmq.Context()
 socket = context.socket(zmq.DEALER)
-socket.connect('ipc://frontend.ipc')
+socket.connect('tcp://node1:5055')
 
 work = [b'a',b'b',b'c']
 

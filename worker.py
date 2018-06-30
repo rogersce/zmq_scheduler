@@ -6,7 +6,7 @@ import dill as pickle
 
 context = zmq.Context()
 socket = context.socket(zmq.REQ)
-socket.connect('ipc://backend.ipc')
+socket.connect('tcp://node1:5056')
 socket.send(b'READY')
 
 while True:
