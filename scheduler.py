@@ -4,9 +4,9 @@ import zmq
 
 context = zmq.Context()
 frontend = context.socket(zmq.ROUTER)
-frontend.bind('ipc://frontend.ipc')
+frontend.bind('tcp://*:5055')
 backend = context.socket(zmq.ROUTER)
-backend.bind('ipc://backend.ipc')
+backend.bind('tcp://*:5056')
 
 workers = []
 poller = zmq.Poller()
