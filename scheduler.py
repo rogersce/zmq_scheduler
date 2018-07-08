@@ -3,6 +3,7 @@
 import zmq
 import dill as pickle
 
+#a client is just a zmq socket
 def get_client(host):
     context = zmq.Context()
     socket = context.socket(zmq.DEALER)
