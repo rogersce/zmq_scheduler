@@ -47,7 +47,7 @@ if __name__ == '__main__':
             print('Backend poll request. There are {0} workers available'.format(len(workers)))
             if client != b'READY' and len(request) > 3:
                 empty, reply = request[3:]
-                frontend.send_multipart([client,b'',workers,reply])
+                frontend.send_multipart([client,b'',worker,reply])
 
         if frontend in sockets:
             print('got a frontend poll request')
