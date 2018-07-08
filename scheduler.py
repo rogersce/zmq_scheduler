@@ -13,7 +13,7 @@ def run(socket,params,f):
     n_sent = 0
     for p in params:
         work = (f,[p])
-        socket.send_multipart([b'',picke.dumps(work)])
+        socket.send_multipart([b'',pickle.dumps(work)])
         n_sent += 1
 
     n_recv = 0
