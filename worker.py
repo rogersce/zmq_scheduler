@@ -11,8 +11,6 @@ socket.send(b'READY')
 
 while True:
     address, empty, request = socket.recv_multipart()
-    request = pickle.loads(request)
-    print('got request ',request)
-    f, args = request
+    f,args = pickle.loads(request)
     result = f(*args)
     socket.send_multipart([address,b'',pickle.dumps(result)])
