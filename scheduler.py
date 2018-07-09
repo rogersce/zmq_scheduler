@@ -21,8 +21,9 @@ def run(socket,params,f,verbose=False):
     results = []
     while n_recv < n_sent:
         empty, worker, result = socket.recv_multipart()
+        result = pickle.loads(result)
         if verbose: print('received worker: {0}, result: {1}'.format(worker,result))
-        results.append(pickle.loads(result))
+        results.append(result)
         n_recv += 1
     return results
 
