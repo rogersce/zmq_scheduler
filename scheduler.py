@@ -10,7 +10,7 @@ def get_client(host):
     socket.connect('tcp://{0}:5055'.format(host))
     return socket
 
-def run(socket,params,f):
+def run(socket,params,f,verbose=False):
     n_sent = 0
     for p in params:
         work = (f,[p])
@@ -21,6 +21,7 @@ def run(socket,params,f):
     results = []
     while n_recv < n_sent:
         empty, worker, result = socket.recv_multipart()
+        if verbose: print('received worker: {0}, result: {1}'.format(worker,result))
         results.append(pickle.loads(result))
         n_recv += 1
     return results
