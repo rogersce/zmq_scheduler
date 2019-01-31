@@ -10,10 +10,10 @@ def get_client(host):
     socket.connect('tcp://{0}:5055'.format(host))
     return socket
 
-def run(socket,params,f,verbose=False):
+def run(socket,params,f,verbose=False,*args,**kwargs):
     n_sent = 0
     for p in params:
-        work = (f,[p])
+        work = (f,[p],kwargs)
         socket.send_multipart([b'',pickle.dumps(work)])
         n_sent += 1
 
