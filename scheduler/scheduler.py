@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-import zmq
-import dill as pickle
-
 #a client is just a zmq socket
 def get_client():
+    import zmq
     context = zmq.Context()
     socket = context.socket(zmq.DEALER)
     socket.connect('tcp://localhost:5055')
     return socket
 
 def run(socket,params,f,verbose=False,*args,**kwargs):
+    import dill as pickle
+
     n_sent = 0
     for p in params:
         work = (f,[p],kwargs)
@@ -27,7 +27,9 @@ def run(socket,params,f,verbose=False,*args,**kwargs):
         n_recv += 1
     return results
 
-if __name__ == '__main__':
+def main():
+    import zmq
+
     context = zmq.Context()
     frontend = context.socket(zmq.ROUTER)
     backend = context.socket(zmq.ROUTER)
@@ -79,3 +81,8 @@ if __name__ == '__main__':
     backend.close()
     frontend.close()
     context.term()
+
+if __name__ == '__main__':
+    main()
+
+
