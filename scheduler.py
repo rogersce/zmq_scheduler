@@ -43,23 +43,38 @@ if __name__ == '__main__':
 
         if backend in sockets:
             request = backend.recv_multipart()
-            worker, empty, client = request[:3]
-            if not workers:
-                poller.register(frontend, zmq.POLLIN)
-            workers.append(worker)
+            backend_addr, empty, msg = request[:3]
+
+            if msg == b'DISCONNECT':
+                workers = [w for w in workers if w != backend_addr]
+                if not workers:
+                    poller.unregister(frontend)
+            elif msg == b'CONNECT':
+                if not workers:
+                    poller.register(frontend, zmq.POLLIN)
+                workers.append(backend_addr)
+            else:
+                if not workers:
+                    poller.register(frontend, zmq.POLLIN)
+                workers.append(backend_addr)
+
+                frontend_addr = msg
+                empty, msg_to_frontend = request[3:]
+                frontend.send_multipart([frontend_addr,b'',backend_addr,msg_to_frontend])
+
             print('Backend poll request. There are {0} workers available'.format(len(workers)))
-            if client != b'READY' and len(request) > 3:
-                empty, reply = request[3:]
-                frontend.send_multipart([client,b'',worker,reply])
+
 
         if frontend in sockets:
-            print('got a frontend poll request')
             client, empty, request = frontend.recv_multipart()
+
             worker = workers.pop(0)
-            print('Frontend poll request. There are {0} workers available'.format(len(workers)))
-            backend.send_multipart([worker, b'', client, b'', request])
             if not workers:
                 poller.unregister(frontend)
+
+            backend.send_multipart([worker, b'', client, b'', request])
+
+            print('Frontend poll request. There are {0} workers available'.format(len(workers)))
 
     backend.close()
     frontend.close()
