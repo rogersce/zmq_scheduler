@@ -13,15 +13,13 @@ def sigint_handler(sig, frame):
 
 signal.signal(signal.SIGINT, sigint_handler)
 
-sched_hostname = sys.argv[1]
 task_id = '1'.rjust(5,'0').encode('ascii')
-#task_id = os.getenv('SLURM_ARRAY_TASK_ID').rjust(5,'0').encode('ascii')
 
 context = zmq.Context()
 socket = context.socket(zmq.REQ)
 socket.setsockopt(zmq.IDENTITY,task_id)
 socket.setsockopt(zmq.REQ_RELAXED,1)
-socket.connect('tcp://{0}:5056'.format(sched_hostname))
+socket.connect('tcp://localhost:5056')
 socket.send(b'CONNECT')
 
 while True:

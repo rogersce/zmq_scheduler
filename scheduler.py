@@ -4,10 +4,10 @@ import zmq
 import dill as pickle
 
 #a client is just a zmq socket
-def get_client(host):
+def get_client():
     context = zmq.Context()
     socket = context.socket(zmq.DEALER)
-    socket.connect('tcp://{0}:5055'.format(host))
+    socket.connect('tcp://localhost:5055')
     return socket
 
 def run(socket,params,f,verbose=False,*args,**kwargs):
