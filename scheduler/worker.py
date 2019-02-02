@@ -6,7 +6,7 @@ def sigint_handler(sig, frame):
     socket.send(b'DISCONNECT')
     sys.exit(0)
 
-def main():
+def main(worker_id):
     import zmq
     import signal
     import dill as pickle
@@ -15,7 +15,7 @@ def main():
 
     signal.signal(signal.SIGINT, sigint_handler)
 
-    task_id = '1'.rjust(5,'0').encode('ascii')
+    task_id = str(worker_id).rjust(5,'0').encode('ascii')
 
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
@@ -31,4 +31,5 @@ def main():
         socket.send_multipart([address,b'',pickle.dumps(result)])
 
 if __name__ == '__main__':
-    main()
+    import sys
+    main(sys.argv[1])
