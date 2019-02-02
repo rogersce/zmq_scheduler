@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
-#a client is just a zmq socket
-def get_client():
+def map(f,params,verbose=False,*args,**kwargs):
     import zmq
+    import dill as pickle
+
     context = zmq.Context()
     socket = context.socket(zmq.DEALER)
     socket.connect('tcp://localhost:5055')
-    return socket
-
-def run(socket,params,f,verbose=False,*args,**kwargs):
-    import dill as pickle
 
     n_sent = 0
     for p in params:
