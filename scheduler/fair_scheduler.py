@@ -6,7 +6,7 @@ import dill as pickle
 class Client:
     def __init__(self,n_nodes):
         self.n_nodes = n_nodes
-        self.dangling_results = {}
+        self.dangling_results = []
 
         self.context = zmq.Context()
         self.pub_socket = self.context.socket(zmq.PUB)
@@ -54,21 +54,25 @@ class Client:
             raise ValueError('Unknown broadcast destination')
 
     def wait_for_completed(self, joblist):
-        joblist = set(joblist)
-        results = {}
+        results = []
 
-        for jobid in joblist.intersection(self.dangling_results):
-            joblist.remove(jobid)
-            results[jobid] = dangling_results[jobid]
-            del dangling_results[jobid]
+        to_remove = []
+        for jobid,result in self.dangling_results:
+            if jobid in joblist:
+                joblist.remove(jobid)
+                results.append(result)
+                to_remove.append(result)
+
+        [self.dangling_results.remove(x) for x in to_remove]
 
         while joblist:
             jobid, result, args, kwargs = pickle.loads(self.pull_socket.recv())
+            result = {'args':args,'kwargs':kwargs,'f_x':result}
             try:
                 joblist.remove(jobid)
-                results[jobid] = {'args':args,'kwargs':kwargs,'f_x':result}
+                results.append(result)
             except ValueError:
-                dangling_results[jobid] = {'args':args,'kwargs':kwargs,'f_x':result}
+                dangling_results.append((jobid,result))
 
         return results
 

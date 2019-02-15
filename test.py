@@ -4,13 +4,13 @@ import zmq
 import time
 from functools import partial
 import numpy as np
-from scheduler.simple_scheduler import Client
+from scheduler.fair_scheduler import Client
 
 def f(x):
     return x*x
 
 def load_data(x):
-    print('GOT A LOAD DATA REQUEST')
+    print('HERE')
     return True
 
 n_nodes = 2
